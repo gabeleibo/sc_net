@@ -1,5 +1,5 @@
-from sc_scrape import Scraper
-from User import Users, User
+from models.scraper import Scraper
+from models.user import Users, User
 import atexit
 
 def title(title):
@@ -35,7 +35,7 @@ user.followers = user_base.process(scraper, followers)
 
 #Close the scraper instance and save layer0
 scraper.exit()
-user_base.save_users('layer0.json')
+user_base.save_users('output/layer0.json')
 title('File Saved')
 
 #Close the Scraper no matter if the script fails (atexit)

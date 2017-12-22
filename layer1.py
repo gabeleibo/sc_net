@@ -1,5 +1,5 @@
-from sc_scrape import Scraper
-from User import Users, User
+from models.scraper import Scraper
+from models.user import Users, User
 import atexit
 
 def title(title):
@@ -9,8 +9,8 @@ def title(title):
 user_base = Users()
 prev_user_base = Users()
 
-user_base.load_users('layer1.json')
-prev_user_base.load_users('layer0.json')
+user_base.load_users('output/layer1.json')
+prev_user_base.load_users('output/layer0.json')
 
 scraper = Scraper()
 
@@ -56,7 +56,7 @@ for prev_user in prev_user_base.users:
         title('Followers')
         user.followers = user_base.process(scraper, followers)
 
-    user_base.save_users('layer1.json')
+    user_base.save_users('output/layer1.json')
     title('Complete')
 
 #Close the Scraper no matter if the script fails (atexit)

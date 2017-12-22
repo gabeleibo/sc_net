@@ -1,5 +1,4 @@
 import json
-from sc_scrape import Scraper
 
 class User:
     def __init__(self, user_name=None, href=None, followers = [],
@@ -20,6 +19,16 @@ class User:
 
     def get_followings(self):
         return self.followings
+
+    def get_friends(self):
+        """Return friends - not to double count mutal followers/ings"""
+        all_users = self.get_followings()
+
+        for follower in self.get_followers():
+            if follower not in all_users:
+                all_users.append(follower)
+
+        return all_users
 
     def has_counts(self):
         return self.followers_count != None and self.followings_count != None
@@ -52,7 +61,7 @@ class Users:
 
     def save_users(self, file_name):
         data = [user.__dict__ for user in self.users]
-        with open("output/" + file_name, 'w') as outfile:
+        with open(file_name, 'w') as outfile:
             json.dump(data, outfile)
 
     def add(self,user):
@@ -69,6 +78,12 @@ class Users:
         if index > -1:
             return self.users[index]
         return None
+
+    def get_all_hrefs(self):
+        user_hrefs = []
+        for user in self.users:
+            user_hrefs.append(user.href)
+        return user_hrefs
 
     def remove(self, user):
         index = self.find(user.href)

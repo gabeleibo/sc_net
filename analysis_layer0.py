@@ -1,33 +1,23 @@
-from sc_scrape import Scraper
-from User import Users, User
-
+from models.user import Users, User
 import numpy as np
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
+# initialize the database
 user_base = Users()
 
-user_base.load_users('layer0.json')
-
-
+# load in users
+user_base.load_users('output/layer0.json')
 user = user_base.get('/gabeleibo')
 
-
-all_users = user.get_followings()
-
-for follower in user.get_followers():
-    if follower not in all_users:
-        all_users.append(follower)
-
+# Get the follwer + following count for each User
 amounts = []
-for user in all_users:
+for user in user.get_friends():
     current = user_base.get(user)
     amount = current.followers_count + current.followings_count
     amounts.append(amount)
 
-
-
-# histogram of the data
+# Histogram of the data
 plt.hist(amounts, 25, facecolor='orange')
 plt.xlabel('Total Followers/Followings')
 plt.ylabel('Frequency')
