@@ -102,13 +102,15 @@ class Users:
         for user in users:
             #Try to find the user in the database to avoid replication
             user_name, href = user['user_name'], user['href']
-            users_hrefs.append(href)
             current = self.get(href)
             #if user is not found then create it
             if current is None:
                 new_user = User(user_name,href)
                 counts = scraper.get_counts(new_user)
                 new_user.set_counts(counts)
+                if new_user.is_celebrity():
+                    continue
                 self.add(new_user)
                 print(new_user.user_name)
+            users_hrefs.append(href)
         return users_hrefs

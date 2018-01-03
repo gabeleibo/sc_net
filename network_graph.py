@@ -6,6 +6,7 @@ import plotly.plotly as py
 from plotly.graph_objs import *
 import os
 import keys
+import math
 
 set_credentials_file(username='gabeleibo', api_key=os.environ["plotly_key"])
 
@@ -21,6 +22,7 @@ init_user = user_base.get('/gabeleibo')
 user_network = init_user.get_friends()
 full_network = user_network + [init_user.href]
 network.add_nodes_from(full_network)
+
 
 # Create edges (user 1 ->(follows) user 2)
 for user in user_base.users:
@@ -38,6 +40,7 @@ for user in user_base.users:
             network.add_edge(follower, user.href)
         else:
             continue
+
 
 # Graph network
 # Modified from https://plot.ly/python/network-graphs/
@@ -70,8 +73,11 @@ node_trace = Scatter(
     mode='markers',
     hoverinfo='text',
     marker=Marker(
-        showscale=False,
-        size=20,
+        showscale=True,
+        colorscale='Viridis',
+        reversescale=True,
+        color=[],
+        size=[],
         colorbar=dict(
             thickness=15,
             title='Node Connections',
@@ -80,16 +86,25 @@ node_trace = Scatter(
         ),
         line=dict(width=2)))
 
+# figure details
 for node in network.nodes():
+    # Set position
     x, y = network.node[node]['pos']
     node_trace['x'].append(x)
     node_trace['y'].append(y)
-    node_trace['text'].append(node)
+    # Set color and size according to number of node connections
+    connections = list(network.neighbors(node))
+    node_trace['marker']['color'].append(len(connections))
+    node_trace['marker']['size'].append(math.sqrt(len(connections))*10)
+    # Add hover info for interactive graph
+    user_name = user_base.get(node).user_name
+    node_info = user_name + ' | # of connections: ' + str(len(connections))
+    node_trace['text'].append(node_info)
 
 # Create figure
 fig = Figure(data=Data([edge_trace, node_trace]),
              layout=Layout(
-                title="Sound Cloud Network Graph for 'gabeleibo'",
+                title="SoundCloud 'Friend' Network Graph for 'gabeleibo'",
                 titlefont=dict(size=16),
                 showlegend=False,
                 hovermode='closest',

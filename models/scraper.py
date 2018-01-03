@@ -33,7 +33,8 @@ class Scraper:
 
     def get_user_collection(self, user, col_type):
         """Fetches a users entire followers list or following list based on
-        the col_type (collection type) using a Chrome Driver to simulate JS"""
+        the col_type (collection type - "followers" or "following") using a
+        Chrome Driver to simulate JS"""
         #url location of the collection and collection type (followers or followings)
         url = 'https://soundcloud.com'+ user.href + '/' + col_type
         self.driver.get(url)
