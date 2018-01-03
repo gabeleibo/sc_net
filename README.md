@@ -10,6 +10,6 @@ pip install -r requirements.txt
 2. Download the Chrome Web Driver [here](https://sites.google.com/a/chromium.org/chromedriver/downloads)
 3. Move the Chrome Driver to the environment bin (ROOTUSER/anaconda/envs/sc_env/bin)
 4. Run layer0.py
-5. In output, duplicate layer0.json and call it layer1.json
+5. In the output folder, duplicate layer0.json and call it layer1.json
 6. Run layer1.py
 7. Repeat Steps 5-6 until you reach the desired network layer depth  
