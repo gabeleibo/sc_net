@@ -5,9 +5,10 @@ from plotly.tools import set_credentials_file
 import plotly.plotly as py
 from plotly.graph_objs import *
 import os
-import keys
 import math
 
+# Remove this and replace with another API key from https://plot.ly/api/
+import keys
 set_credentials_file(username='gabeleibo', api_key=os.environ["plotly_key"])
 
 # Initialize the database
@@ -65,6 +66,7 @@ for edge in network.edges():
     edge_trace['x'] += [x0, x1, None]
     edge_trace['y'] += [y0, y1, None]
 
+
 # Create Node points
 node_trace = Scatter(
     x=[],
@@ -95,6 +97,8 @@ for node in network.nodes():
     # Set color and size according to number of node connections
     connections = list(network.neighbors(node))
     node_trace['marker']['color'].append(len(connections))
+    # Set size using square root to bring the relative sizes closer together
+    # to improve graph astetics.
     node_trace['marker']['size'].append(math.sqrt(len(connections))*10)
     # Add hover info for interactive graph
     user_name = user_base.get(node).user_name
@@ -112,5 +116,5 @@ fig = Figure(data=Data([edge_trace, node_trace]),
                 xaxis=XAxis(showgrid=False, zeroline=False, showticklabels=False),
                 yaxis=YAxis(showgrid=False, zeroline=False, showticklabels=False)))
 
-# Plot
+# Plot to plot.ly
 py.iplot(fig, filename='networkx')

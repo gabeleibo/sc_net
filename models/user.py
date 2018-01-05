@@ -10,6 +10,9 @@ class User:
         self.followers_count = follower_count
         self.followings_count = following_count
 
+    def __str__(self):
+        return str(self.__dict__)
+
     def set_counts(self, counts):
         self.followers_count, self.followings_count = counts['followers_count'],\
         counts['followings_count']
@@ -40,9 +43,6 @@ class User:
 
     def is_celebrity(self):
         return (self.followers_count + self.followings_count) > 800
-
-    def __str__(self):
-        return str(self.__dict__)
 
 class Users:
     def __init__(self):
@@ -80,6 +80,8 @@ class Users:
         return None
 
     def get_all_hrefs(self):
+        """returns a list of hrefs for users in the database instead of the
+        actual user objects"""
         user_hrefs = []
         for user in self.users:
             user_hrefs.append(user.href)
@@ -92,7 +94,7 @@ class Users:
         else:
             raise IndexError('User index not found')
 
-    def process(self, scraper, users):
+    def process(self, scraper, users, keep_celebs = False):
         """ Takes the list of user information (scraper output)
          and converts it to User objects that are added to the
          database with their followers/following counts using
@@ -108,7 +110,7 @@ class Users:
                 new_user = User(user_name,href)
                 counts = scraper.get_counts(new_user)
                 new_user.set_counts(counts)
-                if new_user.is_celebrity():
+                if new_user.is_celebrity() and not keep_celebs:
                     continue
                 self.add(new_user)
                 print(new_user.user_name)
